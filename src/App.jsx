@@ -171,16 +171,7 @@ function App() {
         ))}
       </div>
 
-      <input type="file" accept="image/*" onChange={handleImageUpload} style={{ marginBottom: "10px" }} />
-
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
-        <button onClick={addCard} style={btnStyle("#e67e22")}>➕ 명함 추가</button>
-        <button onClick={generateCSV} style={btnStyle("#f39c12")}>📥 CSV 저장</button>
-      </div>
-
-      <h3 style={{ color: "#d35400" }}>📁 등록된 명함</h3>
-      {{/* 항상 화면에 보이는 파일 선택 & 버튼 영역 */}
-<input
+      <input
   type="file"
   accept="image/*"
   onChange={handleImageUpload}
@@ -205,9 +196,18 @@ function App() {
 
 <h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
 
-{/* 명함이 없으면 안내 메시지, 있으면 목록 출력 */}
 {cardList.length === 0 ? (
   <p>아직 등록된 명함이 없습니다</p>
+) : (
+  <ul>
+    {cardList.map((card, index) => (
+      <li key={index}>
+        {card.name} - {card.company}
+      </li>
+    ))}
+  </ul>
+)}
+
 ) : (
   <ul>
     {cardList.map((card, index) => (
