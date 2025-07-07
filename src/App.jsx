@@ -196,8 +196,32 @@ function App() {
 
 <h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
 
+{{/* 항상 보이는 입력 및 버튼 영역 */}
+<input
+  type="file"
+  accept="image/*"
+  onChange={handleImageUpload}
+  style={{ marginBottom: "20px" }}
+/>
+
+<div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+  <button onClick={addCard} style={btnStyle("#e67e22")}>➕ 명함 추가</button>
+  <button onClick={generateCSV} style={btnStyle("#f39c12")}>📄 CSV 저장</button>
+</div>
+
+<h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
+
+{/* 명함이 있는지 여부에 따라 다르게 표시 */}
 {cardList.length === 0 ? (
   <p>아직 등록된 명함이 없습니다</p>
+) : (
+  <ul>
+    {cardList.map((card, index) => (
+      <li key={index}>{card.name} - {card.company}</li>
+    ))}
+  </ul>
+)}
+
 ) : (
   <ul>
     {cardList.map((card, index) => (
