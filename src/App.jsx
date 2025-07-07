@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import Tesseract from "tesseract.js";
 import CardShareModal from "./components/CardShareModal";
-import { QRCodeCanvas } from "qrcode.react"; // ✅ QR 오류 수정 완료!
+import { QRCodeCanvas } from "qrcode.react";
 
 function App() {
   const [cardInfo, setCardInfo] = useState({
@@ -87,77 +87,13 @@ function App() {
 
     setCardInfo(parsedInfo);
   };
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.setTextColor("#d35400");
-    doc.text("🧾 NameKeep 명함 정보", 20, 20);
-
-    let y = 30;
-    const infoList = [
-      ["Name", selectedCard?.name],
-      ["Company", selectedCard?.company],
-      ["Mobile", selectedCard?.mobile],
-      ["Phone", selectedCard?.phone],
-      ["Email", selectedCard?.email],
-      ["Address", selectedCard?.address],
-      ["Website", selectedCard?.website]
-    ];
-
-    doc.setFontSize(12);
-    doc.setTextColor("#555");
-    infoList.forEach(([label, value]) => {
-      doc.text(`${label}: ${value || ""}`, 20, y);
-      y += 10;
-    });
-
-    doc.save(`${selectedCard?.name || "card"}_명함.pdf`);
-  };
-
-  const translateToEnglish = async (text) => {
-    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|en`);
-    const json = await res.json();
-    return json.responseData?.translatedText || text;
-  };
-
-  const generateCSV = async () => {
-    if (cardList.length === 0) return;
-
-    const header = ["name", "name_en", "company", "company_en", "mobile", "phone", "email", "address", "address_en", "website"];
-
-    const rows = await Promise.all(
-      cardList.map(async (card) => [
-        card.name,
-        await translateToEnglish(card.name),
-        card.company,
-        await translateToEnglish(card.company),
-        card.mobile,
-        card.phone,
-        card.email,
-        card.address,
-        await translateToEnglish(card.address),
-        card.website
-      ])
-    );
-
-    const csvContent = [header.join(","), ...rows.map((r) => r.join(","))].join("\n");
-    const filename = `${cardList[0].name?.replaceAll(" ", "_") || "namelist"}_translated.csv`;
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div style={{ padding: "20px", maxWidth: "700px", margin: "auto", fontFamily: "sans-serif", backgroundColor: "#fff8f2" }}>
       <h1 style={{ textAlign: "center", marginBottom: "20px", color: "#e67e22" }}>
-         🍊 NameKeep 명함 앱 
+        🍊 NameKeep 명함 앱
       </h1>
 
-      <div style={{ display: "grid", gap: "10px", marginBottom: "10px" }}>
+      <div style={{ display: "grid", gap: "10px", marginBottom: "20px" }}>
         {["name", "company", "mobile", "phone", "email", "address", "website"].map((field) => (
           <input
             key={field}
@@ -166,96 +102,55 @@ function App() {
             placeholder={field}
             value={cardInfo[field]}
             onChange={handleChange}
-            style={{ padding: "10px", fontSize: "15px", borderRadius: "6px", border: "1px solid #e67e22" }}
+            style={{
+              padding: "10px",
+              fontSize: "15px",
+              borderRadius: "6px",
+              border: "1px solid #e67e22"
+            }}
           />
         ))}
       </div>
 
       <input
-  type="file"
-  accept="image/*"
-  onChange={handleImageUpload}
-  style={{ marginBottom: "20px" }}
-/>
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        style={{ marginBottom: "20px" }}
+      />
 
-<div
-  style={{
-    display: "flex",
-    gap: "10px",
-    marginBottom: "20px",
-    flexWrap: "wrap",
-  }}
->
-  <button onClick={addCard} style={btnStyle("#e67e22")}>
-    ➕ 명함 추가
-  </button>
-  <button onClick={generateCSV} style={btnStyle("#f39c12")}>
-    📄 CSV 저장
-  </button>
-</div>
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+        <button onClick={addCard} style={btnStyle("#e67e22")}>➕ 명함 추가</button>
+        <button onClick={generateCSV} style={btnStyle("#f39c12")}>📄 CSV 저장</button>
+      </div>
 
-<h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
+      <h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
 
-{{/* 항상 보이는 입력 및 버튼 영역 */}
-<input
-  type="file"
-  accept="image/*"
-  onChange={handleImageUpload}
-  style={{ marginBottom: "20px" }}
-/>
-
-<div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
-  <button onClick={addCard} style={btnStyle("#e67e22")}>➕ 명함 추가</button>
-  <button onClick={generateCSV} style={btnStyle("#f39c12")}>📄 CSV 저장</button>
-</div>
-
-<h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
-
-{/* 명함이 있는지 여부에 따라 다르게 표시 */}
-{cardList.length === 0 ? (
-  <p>아직 등록된 명함이 없습니다</p>
-) : (
-  <ul>
-    {cardList.map((card, index) => (
-      <li key={index}>{card.name} - {card.company}</li>
-    ))}
-  </ul>
-)}
-
-) : (
-  <ul>
-    {cardList.map((card, index) => (
-      <li key={index}>
-        {card.name} - {card.company}
-      </li>
-    ))}
-  </ul>
-)}
-
-) : (
-  <ul>
-    {cardList.map((card, index) => (
-      <li key={index}>{card.name} - {card.company}</li>
-    ))}
-  </ul>
-)}
- : (
+      {cardList.length === 0 ? (
+        <p>아직 등록된 명함이 없습니다</p>
+      ) : (
         cardList.map((card, idx) => (
           <div key={idx} style={{
             border: "1px solid #d35400",
             padding: "10px",
             marginBottom: "10px",
-            borderRadius: "6px"
+            borderRadius: "6px",
+            backgroundColor: "#fff"
           }}>
             <strong>{card.name}</strong> - {card.company}<br />
             {card.preview && (
               <img src={card.preview} alt="명함 이미지" style={{ width: "120px", marginTop: "10px", borderRadius: "6px" }} />
             )}
             <div style={{ marginTop: "10px" }}>
-              <button onClick={() => {
-                setSelectedCard(card);
-                setModalOpen(true);
-              }} style={btnStyle("#3498db")}>🔗 공유하기</button>
+              <button
+                onClick={() => {
+                  setSelectedCard(card);
+                  setModalOpen(true);
+                }}
+                style={btnStyle("#3498db")}
+              >
+                🔗 공유하기
+              </button>
             </div>
           </div>
         ))
