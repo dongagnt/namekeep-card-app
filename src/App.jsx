@@ -154,7 +154,7 @@ function App() {
   return (
     <div style={{ padding: "20px", maxWidth: "700px", margin: "auto", fontFamily: "sans-serif", backgroundColor: "#fff8f2" }}>
       <h1 style={{ textAlign: "center", marginBottom: "20px", color: "#e67e22" }}>
-        🍊 NameKeep 명함 앱
+         🍊 NameKeep 명함 앱 
       </h1>
 
       <div style={{ display: "grid", gap: "10px", marginBottom: "10px" }}>
