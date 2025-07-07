@@ -113,48 +113,48 @@ function App() {
       </div>
 
       <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        style={{ marginBottom: "20px" }}
-      />
+  type="file"
+  accept="image/*"
+  onChange={handleImageUpload}
+  style={{ marginBottom: "20px" }}
+/>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
-        <button onClick={addCard} style={btnStyle("#e67e22")}>➕ 명함 추가</button>
-        <button onClick={generateCSV} style={btnStyle("#f39c12")}>📄 CSV 저장</button>
-      </div>
+<div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+  <button onClick={addCard} style={btnStyle("#e67e22")}>➕ 명함 추가</button>
+  <button onClick={generateCSV} style={btnStyle("#f39c12")}>📄 CSV 저장</button>
+</div>
 
-      <h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
+<h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
 
-      {cardList.length === 0 ? (
-        <p>아직 등록된 명함이 없습니다</p>
-      ) : (
-        cardList.map((card, idx) => (
-          <div key={idx} style={{
-            border: "1px solid #d35400",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "6px",
-            backgroundColor: "#fff"
-          }}>
-            <strong>{card.name}</strong> - {card.company}<br />
-            {card.preview && (
-              <img src={card.preview} alt="명함 이미지" style={{ width: "120px", marginTop: "10px", borderRadius: "6px" }} />
-            )}
-            <div style={{ marginTop: "10px" }}>
-              <button
-                onClick={() => {
-                  setSelectedCard(card);
-                  setModalOpen(true);
-                }}
-                style={btnStyle("#3498db")}
-              >
-                🔗 공유하기
-              </button>
-            </div>
-          </div>
-        ))
+{cardList.length === 0 ? (
+  <p>아직 등록된 명함이 없습니다</p>
+) : (
+  cardList.map((card, idx) => (
+    <div key={idx} style={{
+      border: "1px solid #d35400",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "6px",
+      backgroundColor: "#fff"
+    }}>
+      <strong>{card.name}</strong> - {card.company}<br />
+      {card.preview && (
+        <img src={card.preview} alt="명함 이미지" style={{ width: "120px", marginTop: "10px", borderRadius: "6px" }} />
       )}
+      <div style={{ marginTop: "10px" }}>
+        <button
+          onClick={() => {
+            setSelectedCard(card);
+            setModalOpen(true);
+          }}
+          style={btnStyle("#3498db")}
+        >
+          🔗 공유하기
+        </button>
+      </div>
+    </div>
+  ))
+)}
 
       <CardShareModal
         isOpen={modalOpen}
