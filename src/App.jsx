@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import Tesseract from "tesseract.js";
 import CardShareModal from "./components/CardShareModal";
-// QRCodeCanvas import 제거 (사용하지 않음)
+import { QRCodeCanvas } from "qrcode.react";
 
 function App() {
   const [cardInfo, setCardInfo] = useState({
@@ -56,12 +56,12 @@ function App() {
       }
 
       if (/mobile|cell|핸드폰|m[: ]/i.test(lower)) {
-        const mobNum = text.match(/(\+?\d[\d\s\-()]{9,})/);  // 불필요한 이스케이프 제거
+        const mobNum = text.match(/(\+?\d[\d\s\-\(\)]{9,})/);
         if (mobNum && !parsedInfo.mobile) parsedInfo.mobile = mobNum[0];
       }
 
       if (/tel|전화|contact/i.test(lower)) {
-        const phoneNum = text.match(/(\+?\d[\d\s\-()]{9,})/);  // 불필요한 이스케이프 제거
+        const phoneNum = text.match(/(\+?\d[\d\s\-\(\)]{9,})/);
         if (phoneNum && !parsedInfo.phone) parsedInfo.phone = phoneNum[0];
       }
 
@@ -96,7 +96,6 @@ function App() {
 
   const generateCSV = async () => {
     if (cardList.length === 0) return;
-
     const header = ["name", "name_en", "company", "company_en", "mobile", "phone", "email", "address", "address_en", "website"];
     const rows = await Promise.all(cardList.map(async (card) => [
       card.name,
@@ -148,20 +147,9 @@ function App() {
 
     doc.save(`${selectedCard?.name || "card"}_명함.pdf`);
   };
-  
   return (
-    <div style={{
-      padding: "20px",
-      maxWidth: "700px",
-      margin: "auto",
-      fontFamily: "sans-serif",
-      backgroundColor: "#fff8f2"
-    }}>
-      <h1 style={{
-        textAlign: "center",
-        marginBottom: "20px",
-        color: "#e67e22"
-      }}>
+    <div style={{ padding: "20px", maxWidth: "700px", margin: "auto", fontFamily: "sans-serif", backgroundColor: "#fff8f2" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "20px", color: "#e67e22" }}>
         🍊 NameKeep 명함 앱
       </h1>
 
@@ -198,7 +186,7 @@ function App() {
         <button onClick={generateCSV} style={btnStyle("#f39c12")}>📄 CSV 저장</button>
       </div>
 
-      {/* 명함 목록 */}
+      {/* 명함 카드 목록 */}
       <h3 style={{ color: "#d35400" }}>📂 등록된 명함</h3>
       {cardList.length === 0 ? (
         <p>아직 등록된 명함이 없습니다</p>
@@ -216,11 +204,7 @@ function App() {
               <img
                 src={card.preview}
                 alt="명함 이미지"
-                style={{
-                  width: "120px",
-                  marginTop: "10px",
-                  borderRadius: "6px"
-                }}
+                style={{ width: "120px", marginTop: "10px", borderRadius: "6px" }}
               />
             )}
             <div style={{ marginTop: "10px" }}>
@@ -238,7 +222,7 @@ function App() {
         ))
       )}
 
-      {/* 모달 */}
+      {/* 공유 모달 */}
       <CardShareModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
