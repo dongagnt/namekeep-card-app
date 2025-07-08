@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import Tesseract from "tesseract.js";
 import CardShareModal from "./components/CardShareModal";
-import { QRCodeCanvas } from "qrcode.react";
+// QRCodeCanvas import 제거 (사용하지 않음)
 
 function App() {
   const [cardInfo, setCardInfo] = useState({
@@ -56,12 +56,12 @@ function App() {
       }
 
       if (/mobile|cell|핸드폰|m[: ]/i.test(lower)) {
-        const mobNum = text.match(/(\+?\d[\d\s\-\(\)]{9,})/);
+        const mobNum = text.match(/(\+?\d[\d\s\-()]{9,})/);  // 불필요한 이스케이프 제거
         if (mobNum && !parsedInfo.mobile) parsedInfo.mobile = mobNum[0];
       }
 
       if (/tel|전화|contact/i.test(lower)) {
-        const phoneNum = text.match(/(\+?\d[\d\s\-\(\)]{9,})/);
+        const phoneNum = text.match(/(\+?\d[\d\s\-()]{9,})/);  // 불필요한 이스케이프 제거
         if (phoneNum && !parsedInfo.phone) parsedInfo.phone = phoneNum[0];
       }
 
@@ -148,6 +148,7 @@ function App() {
 
     doc.save(`${selectedCard?.name || "card"}_명함.pdf`);
   };
+  
   return (
     <div style={{
       padding: "20px",
